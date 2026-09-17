@@ -16,9 +16,16 @@ int givenXP;
 int mapLevel;
 int gold;
 bool canDig = true;
+const string redText = "\033[38;2;255;30;30m";
 const string orangeText = "\033[38;2;255;165;0m";
 const string yellowText = "\033[38;2;255;255;0m";
-const string limeGreenText = "\033[38;2;99;255;0m";
+const string brightYellowText = "\033[38;2;255;255;130m";
+const string limeGreenText = "\033[38;2;150;255;150m";
+const string greenText = "\033[38;2;0;255;0m";
+const string blueText = "\033[38;2;120;120;255m";
+const string purpleText = "\033[38;2;216;76;255m";
+const string brownText = "\033[38;2;170;85;0m";
+
 const string resetColor = "\033[0m";
 
 

@@ -21,7 +21,9 @@ int calculateHealth(int playerLVL, int usedScroll, int wearigRing) {
 int xpGiven(int xpAmount) {
 	givenXP = xpAmount;
 	XP += givenXP;
-	cout << "You gained " << XP << " " << " XP!" << endl;
+	cout << greenText;
+	cout << "You gained " << brightYellowText << XP << greenText << "XP!" << endl;
+	cout << resetColor;
 	didLVLUp();
 
 	return givenXP;
@@ -48,12 +50,25 @@ int didLVLUp() {
 	}
 
 	if (leveledUp) {
+		cout << blueText;
+		cout << '\n';
 		cout << "========================================" << endl;
+		cout << resetColor;
+
+		cout << purpleText;
 		cout << "             YOU LEVELED UP!" << endl;
+		cout << resetColor;
+
+		cout << blueText;
 		cout << "========================================" << endl;
+		cout << '\n';
+		cout << resetColor;
+
+		cout << greenText;
 		cout << "You are now level " << levelOfPlayer << "!" << endl;
 		cout << "Your maximum health is now " << maxHealth << "." << endl;
 		cout << "Your next level requires " << maxXP << " XP." << endl;
+		cout << resetColor;
 	}
 
 	return leveledUp ? 1 : 0;
@@ -89,11 +104,19 @@ void calculateFirstLvl() {
 // =========================================
 
 void playerStats() {
+	cout << blueText;
 	cout << '\n';
 	cout << "========================================" << endl;
+	cout << resetColor;
+
+	cout << purpleText;
 	cout << "\t\tPLAYER" << endl;
+	cout << resetColor;
+
+	cout << blueText;
 	cout << "========================================" << endl;
 	cout << '\n';
+	cout << resetColor;
 
 	// Player stats
 	cout << orangeText << "--- Player Stats ---" << resetColor << endl;
@@ -183,19 +206,118 @@ void chooseWeapon() {
 
 	int weaponOfChoice;
 
-	cout << "What is your weapon of choice:" << endl;
-	cout << "1: Scythe - 1d8" << endl;
-	cout << "2: Axe - 2d4" << endl;
-	cout << "3: Long sword - 2d8 -3" << endl;
-	cout << "4: Dagger - 4d4 -3" << endl;
-	cout << "5: Lance - 1d12 -3" << endl;
-	cout << "6: Saber - 3d4" << endl;
+	cout << greenText;
+	cout << "What is your weapon of choice:";
+	cout << resetColor << endl;
+
+	cout << limeGreenText;
+	cout << "1: ";
+	cout << resetColor;
+
+	cout << blueText;
+	cout << "Scythe";
+	cout << resetColor;
+
+	cout << greenText;
+	cout << " - ";
+	cout << resetColor;
+
+	cout << redText;
+	cout << "1d8";
+	cout << resetColor << endl;
+
+
+	cout << limeGreenText;
+	cout << "2: ";
+	cout << resetColor;
+
+	cout << blueText;
+	cout << "Axe";
+	cout << resetColor;
+
+	cout << greenText;
+	cout << " - ";
+	cout << resetColor;
+
+	cout << redText;
+	cout << "2d4";
+	cout << resetColor << endl;
+
+
+	cout << limeGreenText;
+	cout << "3: ";
+	cout << resetColor;
+
+	cout << blueText;
+	cout << "Long sword";
+	cout << resetColor;
+
+	cout << greenText;
+	cout << " - ";
+	cout << resetColor;
+
+	cout << redText;
+	cout << "2d8 -3";
+	cout << resetColor << endl;
+
+
+	cout << limeGreenText;
+	cout << "4: ";
+	cout << resetColor;
+
+	cout << blueText;
+	cout << "Dagger";
+	cout << resetColor;
+
+	cout << greenText;
+	cout << " - ";
+	cout << resetColor;
+
+	cout << redText;
+	cout << "4d4 -3";
+	cout << resetColor << endl;
+
+
+	cout << limeGreenText;
+	cout << "5: ";
+	cout << resetColor;
+
+	cout << blueText;
+	cout << "Lance";
+	cout << resetColor;
+
+	cout << greenText;
+	cout << " - ";
+	cout << resetColor;
+
+	cout << redText;
+	cout << "1d12 -3";
+	cout << resetColor << endl;
+
+
+	cout << limeGreenText;
+	cout << "6: ";
+	cout << resetColor;
+
+	cout << blueText;
+	cout << "Saber";
+	cout << resetColor;
+
+	cout << greenText;
+	cout << " - ";
+	cout << resetColor;
+
+	cout << redText;
+	cout << "3d4";
+	cout << resetColor << endl;
 
 	cin >> weaponOfChoice;
-
+	cout << brightYellowText;
 	if (weaponOfChoice == 1) {
 		cout << " " << endl;
+	
 		cout << "added scythe to weapon slot one" << endl;
+		cout << resetColor;
 		cout << " " << endl;
 		weaponSlots[0] = allItems[1][3];
 	}
@@ -235,4 +357,5 @@ void chooseWeapon() {
 		cout << " " << endl;
 		chooseWeapon();
 	}
+	cout << resetColor;
 }

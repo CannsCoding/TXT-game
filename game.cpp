@@ -15,15 +15,26 @@ using namespace std;
 void startGame() {
 	int wouldDo;
 
+	cout << greenText;
 	cout << "you are starting your journey but before you head off you are at a rest site what would you like to do?" << endl;
-	cout << "1: head off to my adventure." << endl;
+	cout << resetColor;
+
+	cout << limeGreenText;
+	cout << "1: ";
+	cout << resetColor;
+
+	cout << purpleText;
+	cout << "head off to my adventure." << endl;
+	cout << resetColor;
 	cin >> wouldDo;
 
 	if (wouldDo == 1) {
 		startJourney();
 	}
 	else {
+		cout << redText;
 		cout << "Invalid choice." << endl;
+		cout << resetColor;
 
 		startGame();
 	}
@@ -36,13 +47,33 @@ void startGame() {
 void startJourney() {
 
 	cout << endl;
+	cout << blueText;
+	cout << '\n';
 	cout << "========================================" << endl;
-	cout << "        YOU ENTER THE WILDERNESS" << endl;
-	cout << "========================================" << endl;
+	cout << resetColor;
 
+	cout << purpleText;
+	cout << "        YOU ENTER THE WILDERNESS" << endl;
+	cout << resetColor;
+
+	cout << blueText;
+	cout << "========================================" << endl;
+	cout << '\n';
+	cout << resetColor;
+
+	cout << greenText;
 	cout << "You start your journey into the wilderness." << endl;
 	cout << "There is no point in ever doing this when you enter this forest." << endl;
-	cout << "Time and space distorts it is IMPOSSIBLE to get out." << endl;
+	cout << "Time and space distorts it is";
+	cout << resetColor;
+
+
+	cout << redText;
+	cout << " IMPOSSIBLE ";
+	cout << resetColor;
+
+	cout << greenText;
+	cout << "to get out." << endl;
 	cout << endl;
 
 	cout << "Though through many years your civilization found a way" << endl;
@@ -50,10 +81,23 @@ void startJourney() {
 	cout << endl;
 
 	cout << "There is a caveat: the only way they can bring people back" << endl;
-	cout << "is if they die. They will lose EVERYTHING but gain experience." << endl;
+	cout << "is if they die. They will lose";
+	cout << resetColor;
+
+	cout << redText;
+	cout << " EVERYTHING ";
+	cout << resetColor;
+
+	cout << greenText;
+	cout << "but gain experience." << endl;
 	cout << endl;
 
-	cout << "The only reason you are doing this is just for the love of the game." << endl;
+	cout << "The only reason you are doing this is just for the";
+	cout << resetColor;
+
+	cout << redText;
+	cout << " love of the game..." << endl;
+	cout << resetColor;
 	cout << endl;
 
 	lvlGenerator(false);
@@ -95,7 +139,14 @@ void lvlGenerator(bool previousWasRest) {
 // =========================
 
 void normalLevel() {
-	cout << "you encounterd a basic enemy!" << endl;
+	cout << greenText;
+	cout << "you encounterd a";
+	cout << resetColor;
+
+	cout << orangeText;
+	cout << " basic enemy!" << endl;
+	cout << resetColor;
+
 	health = health + maxHealth * .30;
 	if (health > maxHealth) {
 		health = maxHealth;
@@ -108,7 +159,14 @@ void normalLevel() {
 // =========================
 
 void bossLevel() {
-	cout << "you encounterd a boss enemy!" << endl;
+	cout << greenText;
+	cout << "you encounterd a";
+	cout << resetColor;
+
+	cout << redText;
+	cout << " boss enemy!" << endl;
+	cout << resetColor;
+
 	health += maxHealth * .50;
 	if (health > maxHealth) {
 		health = maxHealth;
@@ -124,10 +182,37 @@ void restLevel(bool dontAllowDigging, bool dontAllowShop) {
 	int healthPercent = maxHealth * 0.30;
 	int wouldDo;
 	playerStats();
+	cout << greenText;
 	cout << "you have found a safe place in the woods where a wandering merchant seems to be, while you are here what would you like to do?" << endl;
-	cout << "1: rest (heal 30% of max hp " << healthPercent << ") and continue on my current journey" << endl;
-	cout << "2: Talk to the wandering merchant. (can only do once per rest site)" << endl;
-	cout << "3: dig for loot (can only do once per rest site)." << endl;
+	cout << resetColor;
+
+	cout << limeGreenText;
+	cout << "1: ";
+	cout << resetColor;
+	cout << orangeText;
+	cout << "rest " << limeGreenText;
+	cout << "(heal 30% of max hp " << yellowText;
+	cout << healthPercent << limeGreenText << ")" << greenText;
+	cout << " and continue on my current journey" << endl;
+	cout << resetColor;
+
+	cout << limeGreenText;
+	cout << "2: ";
+	cout << resetColor;
+	cout << greenText;
+	cout << blueText << "Talk" << greenText
+		<< " to the " << purpleText << "wandering merchant" << greenText
+		<< ". (can only do once per rest site)" << endl;
+	cout << resetColor;
+
+	cout << limeGreenText;
+	cout << "3: ";
+	cout << resetColor;
+	cout << greenText;
+	cout << brownText << "dig" << greenText
+		<< " for " << brightYellowText << "loot" << greenText
+		<< " (can only do once per rest site)." << endl;
+	cout << resetColor;
 	cin >> wouldDo;
 
 	if (wouldDo == 1) {

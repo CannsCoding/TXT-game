@@ -7,6 +7,37 @@
 
 using namespace std;
 
+void combatHeader(const string& title) {
+	cout << '\n';
+	cout << blueText
+		<< "========================================"
+		<< resetColor << endl;
+
+	cout << purpleText
+		<< "             " << title
+		<< resetColor << endl;
+
+	cout << blueText
+		<< "========================================"
+		<< resetColor << '\n';
+}
+
+void printMessage(const string& message) {
+	cout << greenText << message << resetColor << endl;
+}
+
+void printOption(int number, const string& message) {
+	cout << limeGreenText << number << ": "
+		<< resetColor << greenText
+		<< message << resetColor << endl;
+}
+
+void printValue(const string& label, int value, int maximum) {
+	cout << limeGreenText << label << ": "
+		<< resetColor << yellowText << value
+		<< "/" << maximum << resetColor << endl;
+}
+
 // ============================================================
 // COMBAT
 // ============================================================
@@ -16,40 +47,34 @@ void combat(string enemyName, bool isBoss) {
 	resetCombat();
 
 	if (isBoss) {
-
-		enemyMaxHealth = 5 + (levelOfPlayer * .5) * 3 + rand() % 10 + 1;
+		enemyMaxHealth = 5 + (levelOfPlayer * .5) * 3
+			+ rand() % 10 + 1;
 		enemyDamage = 2 + levelOfPlayer * .5;
 	}
-
 	else {
-
 		enemyMaxHealth = 5 + levelOfPlayer + rand() % 5 + 1;
 		enemyDamage = 1 + levelOfPlayer;
 	}
 
 	enemyHealth = enemyMaxHealth;
 
-	cout << endl;
-	cout << "========================================" << endl;
-	cout << "             COMBAT START" << endl;
-	cout << "========================================" << endl;
+	combatHeader("COMBAT START");
 
-	cout << "You are fighting: " << enemyName << endl;
+	cout << greenText << "You are fighting: "
+		<< blueText << enemyName
+		<< resetColor << endl;
 
 	while (health > 0 && enemyHealth > 0) {
 
-		// Player turn
 		playerTurn();
 
-		// Check if enemy died
 		if (enemyHealth <= 0) {
+			combatHeader("ENEMY DEFEATED!");
 
-			cout << endl;
-			cout << "========================================" << endl;
-			cout << "            ENEMY DEFEATED!" << endl;
-			cout << "========================================" << endl;
-
-			cout << "You defeated " << enemyName << "!" << endl;
+			cout << greenText << "You defeated "
+				<< blueText << enemyName
+				<< greenText << "!"
+				<< resetColor << endl;
 
 			xpGiven(isBoss ? 30 : 10);
 
@@ -57,17 +82,21 @@ void combat(string enemyName, bool isBoss) {
 			return;
 		}
 
-		// Enemy turn
 		enemyTurn(enemyName);
 
-		// Check if player died
 		if (health <= 0) {
 			char wouldPlay;
-			cout << endl;
-			cout << "You have been defeated." << endl;
+
+			cout << redText
+				<< "You have been defeated."
+				<< resetColor << endl;
+
+			cout << greenText
+				<< "Would you like to play again? (y/n)"
+				<< resetColor << endl;
+
 			cin >> wouldPlay;
 
-			cout << "Would you like to play again? (y/n)" << endl;
 			if (wouldPlay == 'y' || wouldPlay == 'Y') {
 				startGame();
 				return;
@@ -76,7 +105,7 @@ void combat(string enemyName, bool isBoss) {
 				return;
 			}
 			else {
-				cout << "Invalid input, try again" << endl;
+				printMessage("Invalid input, try again.");
 				combat("NULL", false);
 				return;
 			}
@@ -94,15 +123,18 @@ void enemyTurn(string enemyName) {
 		return;
 	}
 
-	cout << endl;
-	cout << "========================================" << endl;
-	cout << "             ENEMY TURN" << endl;
-	cout << "========================================" << endl;
+	combatHeader("ENEMY TURN");
 
 	int damage = enemyDamage + rand() % 3;
 
-	cout << enemyName << " attacks you!" << endl;
-	cout << "You take " << damage << " damage!" << endl;
+	cout << blueText << enemyName
+		<< greenText << " attacks you!"
+		<< resetColor << endl;
+
+	cout << greenText << "You take "
+		<< redText << damage
+		<< greenText << " damage!"
+		<< resetColor << endl;
 
 	health -= damage;
 
@@ -110,9 +142,7 @@ void enemyTurn(string enemyName) {
 		health = 0;
 	}
 
-	cout << "Your HP: "
-		<< health << "/"
-		<< maxHealth << endl;
+	printValue("Your HP", health, maxHealth);
 }
 
 // ============================================================
@@ -127,168 +157,109 @@ void playerTurn() {
 	attackScrollActive = false;
 	speedScrollActive = false;
 	chanceScrollActive = false;
-
 	attackScrollBonus = 0;
 
 	bool turnFinished = false;
 
-	// If the player has a second weapon, they get
-	// an additional attack this turn.
 	if (weaponSlots[1] != "nothing atm") {
 		attacksRemaining = 2;
 	}
 
 	while (!turnFinished && enemyHealth > 0) {
 
-		cout << endl;
-		cout << "========================================" << endl;
-		cout << "             YOUR TURN" << endl;
-		cout << "========================================" << endl;
+		combatHeader("YOUR TURN");
 
-		cout << "Your HP: "
-			<< health << "/"
-			<< maxHealth << endl;
+		printValue("Your HP", health, maxHealth);
+		printValue("Enemy HP", enemyHealth, enemyMaxHealth);
 
-		cout << "Enemy HP: "
-			<< enemyHealth << "/"
-			<< enemyMaxHealth << endl;
+		cout << '\n';
+		cout << greenText
+			<< "What would you like to do?"
+			<< resetColor << endl;
 
-		cout << endl;
+		printOption(1, "Use item");
+		printOption(2, "Use ability");
 
-		cout << "What would you like to do?" << endl;
-		cout << "1: Use item" << endl;
-		cout << "2: Use ability" << endl;
-
-		// Weapon 1
 		if (attacksRemaining > 0 &&
 			weaponSlots[0] != "nothing atm") {
 
-			cout << "3: Attack with weapon 1 - "
-				<< weaponSlots[0] << endl;
+			cout << limeGreenText << "3: "
+				<< resetColor << greenText
+				<< "Attack with weapon 1 - "
+				<< blueText << weaponSlots[0]
+				<< resetColor << endl;
 		}
 
-		// Weapon 2
 		if (attacksRemaining > 0 &&
 			weaponSlots[1] != "nothing atm" &&
 			!secondWeaponUsed) {
 
-			cout << "4: Attack with weapon 2 - "
-				<< weaponSlots[1]
-				<< " (-2 damage)" << endl;
+			cout << limeGreenText << "4: "
+				<< resetColor << greenText
+				<< "Attack with weapon 2 - "
+				<< blueText << weaponSlots[1]
+				<< greenText << " (-2 damage)"
+				<< resetColor << endl;
 		}
 
-		cout << "5: End turn" << endl;
+		printOption(5, "End turn");
 
 		int choice;
 		cin >> choice;
 
-		// =========================================
-		// USE ITEM
-		// =========================================
-
 		if (choice == 1) {
-
 			useItem();
 		}
-
-		// =========================================
-		// USE ABILITY
-		// =========================================
-
 		else if (choice == 2) {
-
 			useAbility();
 		}
-
-		// =========================================
-		// WEAPON 1
-		// =========================================
-
 		else if (choice == 3) {
 
 			if (attacksRemaining <= 0) {
-
-				cout << "You have no attacks remaining." << endl;
+				printMessage("You have no attacks remaining.");
 			}
-
 			else if (weaponSlots[0] == "nothing atm") {
-
-				cout << "You do not have a weapon equipped." << endl;
+				printMessage("You do not have a weapon equipped.");
 			}
-
 			else {
-
 				attackWithWeapon(0);
 
-				// If enemy died, end the player's turn
-				if (enemyHealth <= 0) {
-					turnFinished = true;
-				}
-
-				// If there are no attacks left, end turn
-				else if (attacksRemaining <= 0) {
+				if (enemyHealth <= 0 ||
+					attacksRemaining <= 0) {
 					turnFinished = true;
 				}
 			}
 		}
-
-		// =========================================
-		// WEAPON 2
-		// =========================================
-
 		else if (choice == 4) {
 
 			if (attacksRemaining <= 0) {
-
-				cout << "You have no attacks remaining." << endl;
+				printMessage("You have no attacks remaining.");
 			}
-
 			else if (weaponSlots[1] == "nothing atm") {
-
-				cout << "You do not have a second weapon equipped." << endl;
+				printMessage("You do not have a second weapon equipped.");
 			}
-
 			else if (secondWeaponUsed) {
-
-				cout << "You already used your second weapon." << endl;
+				printMessage("You already used your second weapon.");
 			}
-
 			else {
-
 				attackWithWeapon(1);
-
 				secondWeaponUsed = true;
 
-				// If enemy died, end the player's turn
-				if (enemyHealth <= 0) {
-					turnFinished = true;
-				}
-
-				// If there are no attacks left, end turn
-				else if (attacksRemaining <= 0) {
+				if (enemyHealth <= 0 ||
+					attacksRemaining <= 0) {
 					turnFinished = true;
 				}
 			}
 		}
-
-		// =========================================
-		// END TURN
-		// =========================================
-
 		else if (choice == 5) {
-
-			cout << "You ended your turn." << endl;
-
+			printMessage("You ended your turn.");
 			turnFinished = true;
 		}
-
 		else {
-
-			cout << "Invalid choice." << endl;
+			printMessage("Invalid choice.");
 		}
 	}
 
-	// Turn-based scroll effects stop here
 	attackScrollActive = false;
 	speedScrollActive = false;
 	chanceScrollActive = false;
@@ -306,30 +277,32 @@ void attackWithWeapon(int weaponSlot) {
 	}
 
 	if (weaponSlots[weaponSlot] == "nothing atm") {
-
-		cout << "There is no weapon in that slot!" << endl;
+		printMessage("There is no weapon in that slot!");
 		return;
 	}
 
 	string weapon = weaponSlots[weaponSlot];
-
 	int damage = rollWeaponDamage(weapon);
 
-	// Second weapon gets -2 damage
 	if (weaponSlot == 1) {
-
 		damage -= 2;
 
 		if (damage < 0) {
 			damage = 0;
 		}
 
-		cout << "Second weapon penalty: -2 damage." << endl;
+		printMessage("Second weapon penalty: -2 damage.");
 	}
 
-	cout << endl;
-	cout << "You attack with your " << weapon << "!" << endl;
-	cout << "You deal " << damage << " damage!" << endl;
+	cout << greenText << "You attack with your "
+		<< blueText << weapon
+		<< greenText << "!"
+		<< resetColor << endl;
+
+	cout << greenText << "You deal "
+		<< redText << damage
+		<< greenText << " damage!"
+		<< resetColor << endl;
 
 	enemyHealth -= damage;
 
@@ -337,14 +310,12 @@ void attackWithWeapon(int weaponSlot) {
 		enemyHealth = 0;
 	}
 
-	cout << "Enemy HP: "
-		<< enemyHealth << "/"
-		<< enemyMaxHealth << endl;
+	printValue("Enemy HP", enemyHealth, enemyMaxHealth);
 
 	attacksRemaining--;
 
 	if (speedScrollActive && attacksRemaining > 0) {
-		cout << "Scroll of Speed gives you another attack!" << endl;
+		printMessage("Scroll of Speed gives you another attack!");
 	}
 }
 
@@ -357,77 +328,66 @@ int rollWeaponDamage(string weapon) {
 	int damage = 0;
 
 	if (weapon == "Dagger 4d4-3") {
-
-		damage = ((rand() % 4 + 1) +
-			(rand() % 4 + 1) +
-			(rand() % 4 + 1) +
-			(rand() % 4 + 1)) - 3;
+		damage = (rand() % 4 + 1)
+			+ (rand() % 4 + 1)
+			+ (rand() % 4 + 1)
+			+ (rand() % 4 + 1) - 3;
 	}
-
 	else if (weapon == "Saber 3d4") {
-
-		damage = ((rand() % 4 + 1) +
-			(rand() % 4 + 1) +
-			(rand() % 4 + 1));
+		damage = (rand() % 4 + 1)
+			+ (rand() % 4 + 1)
+			+ (rand() % 4 + 1);
 	}
-
 	else if (weapon == "Axe 2d4") {
-
-		damage = ((rand() % 4 + 1) +
-			(rand() % 4 + 1));
+		damage = (rand() % 4 + 1)
+			+ (rand() % 4 + 1);
 	}
-
 	else if (weapon == "Sythe 1d8") {
-
-		damage = (rand() % 8 + 1);
+		damage = rand() % 8 + 1;
 	}
-
 	else if (weapon == "Long Sword 2d8-3") {
-
-		damage = ((rand() % 8 + 1) +
-			(rand() % 8 + 1)) - 3;
+		damage = (rand() % 8 + 1)
+			+ (rand() % 8 + 1) - 3;
 	}
-
 	else if (weapon == "Lance 1d12-3+critchance") {
 
-		damage = (rand() % 12 + 1) - 3;
+		damage = rand() % 12 + 1 - 3;
 
-		// 50/50 critical chance
-		int critChance = rand() % 2;
-
-		if (critChance == 1) {
+		if (rand() % 2 == 1) {
 			damage *= 2;
-			cout << "CRITICAL HIT!" << endl;
+
+			cout << redText
+				<< "CRITICAL HIT!"
+				<< resetColor << endl;
 		}
 	}
 
-	// Player level adds to damage
 	damage += levelOfPlayer * .5;
 
-	// Ring of Strength
 	if (accessories[0] == "Ring of Strength (+3 to attack)" ||
 		accessories[1] == "Ring of Strength (+3 to attack)") {
-
-		damage += 3;
+			damage += 3;
 	}
 
-	// Scroll of Attack
 	if (attackScrollActive) {
 		damage += attackScrollBonus;
 	}
 
-	// Scroll of Chance
 	if (chanceScrollActive) {
 
-		int chance = rand() % 2;
+		if (rand() % 2 == 0) {
+			cout << redText
+				<< "Your attack MISSED!"
+				<< resetColor << endl;
 
-		if (chance == 0) {
-			cout << "Your attack MISSED!" << endl;
 			return 0;
 		}
 
 		damage *= 2;
-		cout << "Scroll of Chance activated! DAMAGE DOUBLED!" << endl;
+
+		cout << brightYellowText
+			<< "Scroll of Chance activated! DAMAGE DOUBLED!"
+			<< resetColor << endl;
 	}
 
 	return damage;
@@ -439,8 +399,9 @@ int rollWeaponDamage(string weapon) {
 
 void useItem() {
 
-	cout << endl;
-	cout << "===== ITEMS =====" << endl;
+	cout << orangeText
+		<< "===== ITEMS ====="
+		<< resetColor << endl;
 
 	bool hasItem = false;
 
@@ -449,19 +410,21 @@ void useItem() {
 		if (inventory[i] != "nothing atm" &&
 			isScroll(inventory[i])) {
 
-			cout << i + 1 << ": " << inventory[i] << endl;
+			cout << limeGreenText << i + 1 << ": "
+				<< resetColor << blueText
+				<< inventory[i]
+				<< resetColor << endl;
 
 			hasItem = true;
 		}
 	}
 
 	if (!hasItem) {
-
-		cout << "You have no usable items." << endl;
+		printMessage("You have no usable items.");
 		return;
 	}
 
-	cout << "4: Go back" << endl;
+	printOption(4, "Go back");
 
 	int choice;
 	cin >> choice;
@@ -471,8 +434,7 @@ void useItem() {
 	}
 
 	if (choice < 1 || choice > 3) {
-
-		cout << "Invalid item choice." << endl;
+		printMessage("Invalid item choice.");
 		return;
 	}
 
@@ -480,23 +442,24 @@ void useItem() {
 
 	if (inventory[slot] == "nothing atm" ||
 		!isScroll(inventory[slot])) {
-
-		cout << "That is not a usable item." << endl;
+		printMessage("That is not a usable item.");
 		return;
 	}
 
 	string item = inventory[slot];
 
-	// =========================================
-	// FIREBALL
-	// =========================================
-
 	if (item == "Scroll of Fireball (1d20)") {
 
 		int damage = rand() % 20 + 1;
 
-		cout << "You cast Fireball!" << endl;
-		cout << "Fireball deals " << damage << " damage!" << endl;
+		cout << purpleText
+			<< "You cast Fireball!"
+			<< resetColor << endl;
+
+		cout << greenText << "Fireball deals "
+			<< redText << damage
+			<< greenText << " damage!"
+			<< resetColor << endl;
 
 		enemyHealth -= damage;
 
@@ -504,16 +467,10 @@ void useItem() {
 			enemyHealth = 0;
 		}
 	}
-
-	// =========================================
-	// HEALING
-	// =========================================
-
 	else if (item == "Scroll of Healing (heal 2d10)") {
 
-		int healing =
-			(rand() % 10 + 1) +
-			(rand() % 10 + 1);
+		int healing = (rand() % 10 + 1)
+			+ (rand() % 10 + 1);
 
 		health += healing;
 
@@ -521,71 +478,63 @@ void useItem() {
 			health = maxHealth;
 		}
 
-		cout << "You healed " << healing << " HP!" << endl;
-		cout << "HP: " << health << "/" << maxHealth << endl;
+		cout << greenText << "You healed "
+			<< limeGreenText << healing
+			<< greenText << " HP!"
+			<< resetColor << endl;
+
+		printValue("HP", health, maxHealth);
 	}
-
-	// =========================================
-	// ATTACK
-	// =========================================
-
 	else if (item == "Scroll of Attack (+1d6 to damage)") {
 
 		attackScrollActive = true;
 		attackScrollBonus = rand() % 6 + 1;
 
-		cout << "Scroll of Attack activated!" << endl;
-		cout << "Your attacks gain +"
-			<< attackScrollBonus
-			<< " damage for the rest of your turn." << endl;
+		cout << purpleText
+			<< "Scroll of Attack activated!"
+			<< resetColor << endl;
+
+		cout << greenText << "Your attacks gain +"
+			<< yellowText << attackScrollBonus
+			<< greenText << " damage for the rest of your turn."
+			<< resetColor << endl;
 	}
-
-	// =========================================
-	// SPEED
-	// =========================================
-
 	else if (item == "Scroll of Speed (+1 attack)") {
 
 		speedScrollActive = true;
 		attacksRemaining++;
 
-		cout << "Scroll of Speed activated!" << endl;
-		cout << "You can make an additional attack this turn." << endl;
+		cout << purpleText
+			<< "Scroll of Speed activated!"
+			<< resetColor << endl;
+
+		printMessage("You can make an additional attack this turn.");
 	}
-
-	// =========================================
-	// DIVINITY
-	// =========================================
-
 	else if (item == "Scroll of Divinity (+10 MAX Hp)") {
 
 		maxHealth += 10;
 		health += 10;
 
-		cout << "Divinity activated!" << endl;
-		cout << "MAX HP increased by 10." << endl;
+		cout << purpleText
+			<< "Divinity activated!"
+			<< resetColor << endl;
+
+		printMessage("MAX HP increased by 10.");
 	}
-
-	// =========================================
-	// CHANCE
-	// =========================================
-
 	else if (item == "Scroll of Chance (x2 attack but can miss)") {
 
 		chanceScrollActive = true;
 
-		cout << "Scroll of Chance activated!" << endl;
-		cout << "Your next attack has a 50% chance to miss." << endl;
-		cout << "If it hits, its damage is doubled." << endl;
+		cout << purpleText
+			<< "Scroll of Chance activated!"
+			<< resetColor << endl;
+
+		printMessage("Your next attack has a 50% chance to miss.");
+		printMessage("If it hits, its damage is doubled.");
 	}
 
-	// =========================================
-	// CONSUME ITEM
-	// =========================================
-
 	inventory[slot] = "nothing atm";
-
-	cout << "The scroll was consumed." << endl;
+	printMessage("The scroll was consumed.");
 
 	if (enemyHealth < 0) {
 		enemyHealth = 0;
@@ -598,14 +547,11 @@ void useItem() {
 
 void useAbility() {
 
-	cout << endl;
-	cout << "===== ABILITIES =====" << endl;
+	cout << orangeText
+		<< "===== ABILITIES ====="
+		<< resetColor << endl;
 
 	bool hasAbility = false;
-
-	// -----------------------------------------
-	// RING SLOT 1
-	// -----------------------------------------
 
 	if (accessories[0] != "nothing atm" &&
 		isRing(accessories[0]) &&
@@ -613,12 +559,11 @@ void useAbility() {
 
 		hasAbility = true;
 
-		cout << "1: " << accessories[0] << endl;
+		cout << limeGreenText << "1: "
+			<< resetColor << blueText
+			<< accessories[0]
+			<< resetColor << endl;
 	}
-
-	// -----------------------------------------
-	// RING SLOT 2
-	// -----------------------------------------
 
 	if (accessories[1] != "nothing atm" &&
 		isRing(accessories[1]) &&
@@ -626,16 +571,18 @@ void useAbility() {
 
 		hasAbility = true;
 
-		cout << "2: " << accessories[1] << endl;
+		cout << limeGreenText << "2: "
+			<< resetColor << blueText
+			<< accessories[1]
+			<< resetColor << endl;
 	}
 
 	if (!hasAbility) {
-
-		cout << "You have no available ring abilities." << endl;
+		printMessage("You have no available ring abilities.");
 		return;
 	}
 
-	cout << "3: Go back" << endl;
+	printOption(3, "Go back");
 
 	int choice;
 	cin >> choice;
@@ -646,65 +593,56 @@ void useAbility() {
 		accessories[0] != "nothing atm" &&
 		isRing(accessories[0]) &&
 		!abilityUsed[0]) {
-
 		ringSlot = 0;
 	}
-
 	else if (choice == 2 &&
 		accessories[1] != "nothing atm" &&
 		isRing(accessories[1]) &&
 		!abilityUsed[1]) {
-
 		ringSlot = 1;
 	}
-
 	else if (choice == 3) {
-
 		return;
 	}
-
 	else {
-
-		cout << "Invalid ability choice." << endl;
+		printMessage("Invalid ability choice.");
 		return;
 	}
 
 	string ring = accessories[ringSlot];
-
-	// =========================================
-	// RING OF VITALITY
-	// =========================================
 
 	if (ring == "Ring of Vitality (+10 MAX Hp)") {
 
 		maxHealth += 10;
 		health += 10;
 
-		cout << "Ring of Vitality activated!" << endl;
-		cout << "Your MAX HP increased by 10." << endl;
-		cout << "HP: " << health << "/" << maxHealth << endl;
+		cout << purpleText
+			<< "Ring of Vitality activated!"
+			<< resetColor << endl;
+
+		printMessage("Your MAX HP increased by 10.");
+		printValue("HP", health, maxHealth);
 	}
-
-	// =========================================
-	// RING OF STRENGTH
-	// =========================================
-
 	else if (ring == "Ring of Strength (+3 to attack)") {
 
-		cout << "Ring of Strength activated!" << endl;
-		cout << "You already receive +3 damage from this ring." << endl;
+		cout << purpleText
+			<< "Ring of Strength activated!"
+			<< resetColor << endl;
+
+		printMessage("You already receive +3 damage from this ring.");
 	}
-
-	// =========================================
-	// RING OF LIGHTNING
-	// =========================================
-
 	else if (ring == "ring of lightning (free 1d6 attack)") {
 
 		int damage = rand() % 6 + 1;
 
-		cout << "Lightning strikes the enemy!" << endl;
-		cout << "You deal " << damage << " lightning damage!" << endl;
+		cout << purpleText
+			<< "Lightning strikes the enemy!"
+			<< resetColor << endl;
+
+		cout << greenText << "You deal "
+			<< redText << damage
+			<< greenText << " lightning damage!"
+			<< resetColor << endl;
 
 		enemyHealth -= damage;
 
@@ -712,15 +650,14 @@ void useAbility() {
 			enemyHealth = 0;
 		}
 
-		cout << "Enemy HP: "
-			<< enemyHealth << "/"
-			<< enemyMaxHealth << endl;
+		printValue("Enemy HP", enemyHealth, enemyMaxHealth);
 	}
 
 	abilityUsed[ringSlot] = true;
 
-	cout << "This ability cannot be used again until the next combat."
-		<< endl;
+	printMessage(
+		"This ability cannot be used again until the next combat."
+	);
 }
 
 // ============================================================
@@ -737,7 +674,6 @@ void resetCombat() {
 	chanceScrollActive = false;
 
 	attackScrollBonus = 0;
-
 	attacksRemaining = 1;
 	secondWeaponUsed = false;
 }
@@ -749,36 +685,35 @@ void resetCombat() {
 void enemyChoice(bool isBoss) {
 
 	int enemyGen = rand() % 3 + 1;
-
 	string enemyType;
 
 	if (isBoss) {
-
 		if (enemyGen == 1) {
 			enemyType = "giantEnemySpider";
 		}
 		else if (enemyGen == 2) {
 			enemyType = "amalgamation";
 		}
-		else if (enemyGen == 3) {
+		else {
 			enemyType = "lostSouls";
 		}
 	}
-
 	else {
-
 		if (enemyGen == 1) {
 			enemyType = "splittingSlime";
 		}
 		else if (enemyGen == 2) {
 			enemyType = "allEaterSnail";
 		}
-		else if (enemyGen == 3) {
+		else {
 			enemyType = "twistedHuman";
 		}
 	}
 
-	cout << "You are fighting a " << enemyType << "!" << endl;
+	cout << greenText << "You are fighting a "
+		<< blueText << enemyType
+		<< greenText << "!"
+		<< resetColor << endl;
 
 	combat(enemyType, isBoss);
 }

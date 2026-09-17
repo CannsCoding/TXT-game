@@ -3,916 +3,852 @@
 #include "game.h"
 #include "items.h"
 #include <iostream>
+#include <string>
 
 using namespace std;
+
+// ============================================================
+// SHOP DISPLAY HELPERS
+// ============================================================
+
+void shopTitle(const string& text) {
+	cout << orangeText << text << resetColor << endl;
+}
+
+void shopMessage(const string& text) {
+	cout << greenText << text << resetColor << endl;
+}
+
+void shopOption(int number, const string& text) {
+	cout << limeGreenText << number << ": "
+		<< resetColor << greenText << text
+		<< resetColor << endl;
+}
+
+void shopItem(int number, const string& item, int price) {
+	cout << limeGreenText << number << ": "
+		<< resetColor << blueText << item
+		<< resetColor << greenText << " - "
+		<< yellowText << price << " gold"
+		<< resetColor << endl;
+}
+
+void shopInventorySlot(int number, const string& item) {
+	cout << limeGreenText << number << ": "
+		<< resetColor << yellowText << item
+		<< resetColor << endl;
+}
+
+void shopGold() {
+	cout << greenText << "You currently have "
+		<< yellowText << gold
+		<< greenText << " gold."
+		<< resetColor << endl;
+}
+
+void shopPurchaseMessage(const string& item, int price) {
+	cout << greenText << "You bought "
+		<< blueText << item
+		<< greenText << " for "
+		<< yellowText << price
+		<< greenText << " gold."
+		<< resetColor << endl;
+}
+
+void shopSaleMessage(const string& item, int price) {
+	cout << greenText << "You sold "
+		<< blueText << item
+		<< greenText << " for "
+		<< yellowText << price
+		<< greenText << " gold!"
+		<< resetColor << endl;
+}
+
+// ============================================================
+// ITEM SELL PRICES
+// ============================================================
+
+int getSellPrice(const string& item) {
+
+	if (item == "basic ring") {
+		return 5;
+	}
+	else if (item == "scrap") {
+		return 3;
+	}
+	else if (item == "chain") {
+		return 5;
+	}
+	else if (item == "Dagger 4d4-3") {
+		return 15;
+	}
+	else if (item == "Saber 3d4") {
+		return 20;
+	}
+	else if (item == "Axe 2d4") {
+		return 20;
+	}
+	else if (item == "Sythe 1d8") {
+		return 15;
+	}
+	else if (item == "Long Sword 2d8-3") {
+		return 25;
+	}
+	else if (item == "Lance 1d12-3+critchance") {
+		return 30;
+	}
+	else if (item == "Studded lether +5 to Hp") {
+		return 30;
+	}
+	else if (item == "Chainmail +10 to Hp") {
+		return 45;
+	}
+	else if (item == "Plate armor +20 to hp") {
+		return 70;
+	}
+	else if (item == "Scroll of Fireball (1d20)") {
+		return 35;
+	}
+	else if (item == "Scroll of Healing (heal 2d10)") {
+		return 30;
+	}
+	else if (item == "Scroll of Attack (+1d6 to damage)") {
+		return 35;
+	}
+	else if (item == "Scroll of Speed (+1 attack)") {
+		return 40;
+	}
+	else if (item == "Scroll of Divinity (+10 MAX Hp)") {
+		return 50;
+	}
+	else if (item == "Scroll of Chance (x2 attack but can miss)") {
+		return 50;
+	}
+	else if (item == "Ring of Vitality (+10 MAX Hp)") {
+		return 50;
+	}
+	else if (item == "Ring of Strength (+3 to attack)") {
+		return 50;
+	}
+	else if (item == "ring of lightning (free 1d6 attack)") {
+		return 60;
+	}
+
+	return 5;
+}
+
+// ============================================================
+// SELL WEAPON
+// ============================================================
+
+void sellWeapon() {
+
+	int slot;
+
+	cout << endl;
+	shopTitle("Which weapon would you like to sell?");
+
+	cout << limeGreenText << "1: Weapon slot 1 - "
+		<< resetColor << blueText << weaponSlots[0]
+		<< resetColor << endl;
+
+	cout << limeGreenText << "2: Weapon slot 2 - "
+		<< resetColor << blueText << weaponSlots[1]
+		<< resetColor << endl;
+
+	shopOption(3, "Go back");
+	cin >> slot;
+
+	if (slot == 3) {
+		return;
+	}
+
+	if (slot != 1 && slot != 2) {
+		shopMessage("Invalid choice.");
+		return;
+	}
+
+	if (weaponSlots[slot - 1] == "nothing atm") {
+		shopMessage("There is no weapon in that slot.");
+		return;
+	}
+
+	string itemSold = weaponSlots[slot - 1];
+	int sellPrice = getSellPrice(itemSold);
+
+	weaponSlots[slot - 1] = "nothing atm";
+	gold += sellPrice;
+
+	cout << endl;
+	shopSaleMessage(itemSold, sellPrice);
+	shopGold();
+}
+
+// ============================================================
+// SELL ACCESSORY
+// ============================================================
+
+void sellAccessory() {
+
+	int slot;
+
+	cout << endl;
+	shopTitle("Which accessory would you like to sell?");
+
+	cout << limeGreenText << "1: Right hand - "
+		<< resetColor << blueText << accessories[0]
+		<< resetColor << endl;
+
+	cout << limeGreenText << "2: Left hand - "
+		<< resetColor << blueText << accessories[1]
+		<< resetColor << endl;
+
+	cout << limeGreenText << "3: Body - "
+		<< resetColor << blueText << accessories[2]
+		<< resetColor << endl;
+
+	shopOption(4, "Go back");
+	cin >> slot;
+
+	if (slot == 4) {
+		return;
+	}
+
+	if (slot < 1 || slot > 3) {
+		shopMessage("Invalid choice.");
+		return;
+	}
+
+	if (accessories[slot - 1] == "nothing atm") {
+		shopMessage("There is nothing equipped in that slot.");
+		return;
+	}
+
+	string itemSold = accessories[slot - 1];
+	int sellPrice = getSellPrice(itemSold);
+
+	accessories[slot - 1] = "nothing atm";
+	gold += sellPrice;
+
+	cout << endl;
+	shopSaleMessage(itemSold, sellPrice);
+	shopGold();
+}
+
+// ============================================================
+// SELL INVENTORY ITEM
+// ============================================================
+
+void sellInventoryItem() {
+
+	int slot;
+
+	cout << endl;
+	shopTitle("Which inventory item would you like to sell?");
+
+	shopInventorySlot(1, inventory[0]);
+	shopInventorySlot(2, inventory[1]);
+	shopInventorySlot(3, inventory[2]);
+	shopOption(4, "Go back");
+
+	cin >> slot;
+
+	if (slot == 4) {
+		return;
+	}
+
+	if (slot < 1 || slot > 3) {
+		shopMessage("Invalid choice.");
+		return;
+	}
+
+	if (inventory[slot - 1] == "nothing atm") {
+		shopMessage("There is nothing in that inventory slot.");
+		return;
+	}
+
+	string itemSold = inventory[slot - 1];
+	int sellPrice = getSellPrice(itemSold);
+
+	inventory[slot - 1] = "nothing atm";
+	gold += sellPrice;
+
+	cout << endl;
+	shopSaleMessage(itemSold, sellPrice);
+	shopGold();
+}
+
+// ============================================================
+// BUY COMMON ITEM
+// ============================================================
+
+void buyCommonItem() {
+
+	int choice;
+
+	cout << endl;
+	shopTitle("Common items");
+
+	shopItem(1, "Basic ring", 10);
+	shopItem(2, "Scrap", 6);
+	shopItem(3, "Chain", 10);
+
+	cin >> choice;
+
+	string itemBought;
+	int price;
+
+	if (choice == 1) {
+		itemBought = "basic ring";
+		price = 10;
+	}
+	else if (choice == 2) {
+		itemBought = "scrap";
+		price = 6;
+	}
+	else if (choice == 3) {
+		itemBought = "chain";
+		price = 10;
+	}
+	else {
+		shopMessage("Invalid choice.");
+		return;
+	}
+
+	if (gold < price) {
+		shopMessage("You do not have enough gold.");
+		return;
+	}
+
+	int slot;
+
+	shopTitle("Which inventory slot would you like to put it in?");
+	shopInventorySlot(1, inventory[0]);
+	shopInventorySlot(2, inventory[1]);
+	shopInventorySlot(3, inventory[2]);
+
+	cin >> slot;
+
+	if (slot >= 1 && slot <= 3 &&
+		inventory[slot - 1] == "nothing atm") {
+
+		inventory[slot - 1] = itemBought;
+		gold -= price;
+
+		shopPurchaseMessage(itemBought, price);
+	}
+	else {
+		shopMessage("That inventory slot is unavailable.");
+	}
+}
+
+// ============================================================
+// BUY WEAPON
+// ============================================================
+
+void buyWeapon() {
+
+	int choice;
+
+	cout << endl;
+	shopTitle("Weapons");
+
+	shopItem(1, "Dagger 4d4-3", 30);
+	shopItem(2, "Saber 3d4", 35);
+	shopItem(3, "Axe 2d4", 35);
+	shopItem(4, "Sythe 1d8", 30);
+	shopItem(5, "Long Sword 2d8-3", 40);
+	shopItem(6, "Lance 1d12-3+critchance", 50);
+
+	cin >> choice;
+
+	string itemBought;
+	int price;
+
+	if (choice >= 1 && choice <= 6) {
+		itemBought = allItems[1][choice - 1];
+
+		if (choice == 1) {
+			price = 30;
+		}
+		else if (choice == 2 || choice == 3) {
+			price = 35;
+		}
+		else if (choice == 4) {
+			price = 30;
+		}
+		else if (choice == 5) {
+			price = 40;
+		}
+		else {
+			price = 50;
+		}
+	}
+	else {
+		shopMessage("Invalid choice.");
+		return;
+	}
+
+	if (gold < price) {
+		shopMessage("You do not have enough gold.");
+		return;
+	}
+
+	int storage;
+
+	shopTitle("Where would you like to store the weapon?");
+	shopOption(1, "Weapon slot");
+	shopOption(2, "Inventory");
+	cin >> storage;
+
+	if (storage == 1) {
+
+		int slot;
+
+		shopTitle("Which weapon slot?");
+		shopInventorySlot(1, weaponSlots[0]);
+		shopInventorySlot(2, weaponSlots[1]);
+
+		cin >> slot;
+
+		if (slot >= 1 && slot <= 2 &&
+			weaponSlots[slot - 1] == "nothing atm") {
+
+			weaponSlots[slot - 1] = itemBought;
+			gold -= price;
+
+			shopPurchaseMessage(itemBought, price);
+		}
+		else {
+			shopMessage("That weapon slot is unavailable.");
+		}
+	}
+	else if (storage == 2) {
+
+		int slot;
+
+		shopTitle("Which inventory slot?");
+		shopInventorySlot(1, inventory[0]);
+		shopInventorySlot(2, inventory[1]);
+		shopInventorySlot(3, inventory[2]);
+
+		cin >> slot;
+
+		if (slot >= 1 && slot <= 3 &&
+			inventory[slot - 1] == "nothing atm") {
+
+			inventory[slot - 1] = itemBought;
+			gold -= price;
+
+			shopPurchaseMessage(itemBought, price);
+		}
+		else {
+			shopMessage("That inventory slot is unavailable.");
+		}
+	}
+	else {
+		shopMessage("Invalid storage choice.");
+	}
+}
+
+// ============================================================
+// BUY ARMOR
+// ============================================================
+
+void buyArmor() {
+
+	int choice;
+
+	cout << endl;
+	shopTitle("Armor");
+
+	shopItem(1, "Studded lether +5 to Hp", 40);
+	shopItem(2, "Chainmail +10 to Hp", 60);
+	shopItem(3, "Plate armor +20 to hp", 90);
+
+	cin >> choice;
+
+	string itemBought;
+	int price;
+
+	if (choice == 1) {
+		itemBought = allItems[2][0];
+		price = 40;
+	}
+	else if (choice == 2) {
+		itemBought = allItems[2][1];
+		price = 60;
+	}
+	else if (choice == 3) {
+		itemBought = allItems[2][2];
+		price = 90;
+	}
+	else {
+		shopMessage("Invalid choice.");
+		return;
+	}
+
+	if (gold < price) {
+		shopMessage("You do not have enough gold.");
+		return;
+	}
+
+	int storage;
+
+	shopTitle("Where would you like to store the armor?");
+	shopOption(1, "Equip armor");
+	shopOption(2, "Inventory");
+	cin >> storage;
+
+	if (storage == 1) {
+
+		if (accessories[2] == "nothing atm") {
+
+			accessories[2] = itemBought;
+			gold -= price;
+
+			cout << greenText << "You bought and equipped "
+				<< blueText << itemBought
+				<< greenText << " for "
+				<< yellowText << price
+				<< greenText << " gold."
+				<< resetColor << endl;
+		}
+		else {
+			shopMessage("You are already wearing armor.");
+		}
+	}
+	else if (storage == 2) {
+
+		int slot;
+
+		shopTitle("Which inventory slot?");
+		shopInventorySlot(1, inventory[0]);
+		shopInventorySlot(2, inventory[1]);
+		shopInventorySlot(3, inventory[2]);
+
+		cin >> slot;
+
+		bool alreadyCarryingArmor = false;
+
+		for (int i = 0; i < 3; i++) {
+			if (isArmor(inventory[i])) {
+				alreadyCarryingArmor = true;
+			}
+		}
+
+		if (alreadyCarryingArmor) {
+			shopMessage(
+				"You can only carry one armor piece in your inventory."
+			);
+		}
+		else if (slot >= 1 && slot <= 3 &&
+			inventory[slot - 1] == "nothing atm") {
+
+			inventory[slot - 1] = itemBought;
+			gold -= price;
+
+			shopPurchaseMessage(itemBought, price);
+		}
+		else {
+			shopMessage("That inventory slot is unavailable.");
+		}
+	}
+	else {
+		shopMessage("Invalid storage choice.");
+	}
+}
+
+// ============================================================
+// BUY SCROLL
+// ============================================================
+
+void buyScroll() {
+
+	int choice;
+
+	cout << endl;
+	shopTitle("Scrolls");
+
+	shopItem(1, "Fireball", 50);
+	shopItem(2, "Healing", 45);
+	shopItem(3, "Attack", 50);
+	shopItem(4, "Speed", 60);
+	shopItem(5, "Divinity", 70);
+	shopItem(6, "Chance", 75);
+
+	cin >> choice;
+
+	if (choice < 1 || choice > 6) {
+		shopMessage("Invalid choice.");
+		return;
+	}
+
+	string itemBought = allItems[3][choice - 1];
+	int price;
+
+	if (choice == 1 || choice == 3) {
+		price = 50;
+	}
+	else if (choice == 2) {
+		price = 45;
+	}
+	else if (choice == 4) {
+		price = 60;
+	}
+	else if (choice == 5) {
+		price = 70;
+	}
+	else {
+		price = 75;
+	}
+
+	if (gold < price) {
+		shopMessage("You do not have enough gold.");
+		return;
+	}
+
+	int slot;
+
+	shopTitle("Which inventory slot would you like to use?");
+	shopInventorySlot(1, inventory[0]);
+	shopInventorySlot(2, inventory[1]);
+	shopInventorySlot(3, inventory[2]);
+
+	cin >> slot;
+
+	if (slot >= 1 && slot <= 3 &&
+		inventory[slot - 1] == "nothing atm") {
+
+		inventory[slot - 1] = itemBought;
+		gold -= price;
+
+		shopPurchaseMessage(itemBought, price);
+	}
+	else {
+		shopMessage("That inventory slot is unavailable.");
+	}
+}
+
+// ============================================================
+// BUY RING
+// ============================================================
+
+void buyRing() {
+
+	int choice;
+
+	cout << endl;
+	shopTitle("Legendary Rings");
+
+	shopItem(1, "Ring of Vitality", 100);
+	shopItem(2, "Ring of Strength", 100);
+	shopItem(3, "Ring of Lightning", 125);
+
+	cin >> choice;
+
+	string itemBought;
+	int price;
+
+	if (choice == 1) {
+		itemBought = allItems[4][0];
+		price = 100;
+	}
+	else if (choice == 2) {
+		itemBought = allItems[4][1];
+		price = 100;
+	}
+	else if (choice == 3) {
+		itemBought = allItems[4][2];
+		price = 125;
+	}
+	else {
+		shopMessage("Invalid choice.");
+		return;
+	}
+
+	if (gold < price) {
+		shopMessage("You do not have enough gold.");
+		return;
+	}
+
+	int storage;
+
+	shopTitle("Where would you like to store the ring?");
+	shopOption(1, "Equip ring");
+	shopOption(2, "Inventory");
+	cin >> storage;
+
+	if (storage == 1) {
+
+		int slot;
+
+		shopTitle("Which ring slot?");
+		shopOption(1, "Right hand");
+		shopOption(2, "Left hand");
+		cin >> slot;
+
+		if (slot >= 1 && slot <= 2 &&
+			accessories[slot - 1] == "nothing atm") {
+
+			accessories[slot - 1] = itemBought;
+			gold -= price;
+
+			cout << greenText << "You bought and equipped "
+				<< blueText << itemBought
+				<< greenText << " for "
+				<< yellowText << price
+				<< greenText << " gold."
+				<< resetColor << endl;
+		}
+		else {
+			shopMessage("That ring slot is unavailable.");
+		}
+	}
+	else if (storage == 2) {
+
+		int slot;
+
+		shopTitle("Which inventory slot?");
+		shopInventorySlot(1, inventory[0]);
+		shopInventorySlot(2, inventory[1]);
+		shopInventorySlot(3, inventory[2]);
+
+		cin >> slot;
+
+		if (slot >= 1 && slot <= 3 &&
+			inventory[slot - 1] == "nothing atm") {
+
+			inventory[slot - 1] = itemBought;
+			gold -= price;
+
+			shopPurchaseMessage(itemBought, price);
+		}
+		else {
+			shopMessage("That inventory slot is unavailable.");
+		}
+	}
+	else {
+		shopMessage("Invalid storage choice.");
+	}
+}
+
+// ============================================================
+// SHOP
+// ============================================================
 
 void shop() {
 
 	int whatDo;
 
-	cout << "You currently have " << gold << " gold." << endl;
+	cout << endl;
+	shopTitle("===== WANDERING MERCHANT =====");
+	shopGold();
 	cout << endl;
 
-	cout << "What would you like to do?" << endl;
-	cout << "1: Sell" << endl;
-	cout << "2: Buy" << endl;
-	cout << "3: Leave shop" << endl;
+	shopMessage("What would you like to do?");
+	shopOption(1, "Sell");
+	shopOption(2, "Buy");
+	shopOption(3, "Leave shop");
+
 	cin >> whatDo;
 
-
-	// =========================================
+	// ========================================================
 	// SELL
-	// =========================================
+	// ========================================================
 
 	if (whatDo == 1) {
 
 		int whereSell;
 
 		cout << endl;
-		cout << "What would you like to sell?" << endl;
-		cout << "1: Weapon" << endl;
-		cout << "2: Accessory" << endl;
-		cout << "3: Inventory item" << endl;
-		cout << "4: Go back" << endl;
+		shopTitle("What would you like to sell?");
+		shopOption(1, "Weapon");
+		shopOption(2, "Accessory");
+		shopOption(3, "Inventory item");
+		shopOption(4, "Go back");
+
 		cin >> whereSell;
 
-
-		// -----------------------------------------
-		// SELL WEAPON
-		// -----------------------------------------
-
 		if (whereSell == 1) {
-
-			int slot;
-
-			cout << endl;
-			cout << "Which weapon would you like to sell?" << endl;
-			cout << "1: Weapon slot 1 - " << weaponSlots[0] << endl;
-			cout << "2: Weapon slot 2 - " << weaponSlots[1] << endl;
-			cout << "3: Go back" << endl;
-			cin >> slot;
-
-
-			if (slot == 1 || slot == 2) {
-
-				if (weaponSlots[slot - 1] == "nothing atm") {
-
-					cout << "There is no weapon in that slot." << endl;
-					shop();
-					return;
-				}
-
-				string itemSold = weaponSlots[slot - 1];
-				int sellPrice = 0;
-
-
-				// Weapon prices
-				if (itemSold == "Dagger 4d4-3") {
-					sellPrice = 15;
-				}
-				else if (itemSold == "Saber 3d4") {
-					sellPrice = 20;
-				}
-				else if (itemSold == "Axe 2d4") {
-					sellPrice = 20;
-				}
-				else if (itemSold == "Sythe 1d8") {
-					sellPrice = 15;
-				}
-				else if (itemSold == "Long Sword 2d8-3") {
-					sellPrice = 25;
-				}
-				else if (itemSold == "Lance 1d12-3+critchance") {
-					sellPrice = 30;
-				}
-				else {
-					sellPrice = 10;
-				}
-
-
-				weaponSlots[slot - 1] = "nothing atm";
-				gold += sellPrice;
-
-				cout << endl;
-				cout << "You sold " << itemSold << " for "
-					<< sellPrice << " gold!" << endl;
-
-				cout << "You now have " << gold << " gold." << endl;
-
-				shop();
-				return;
-			}
-
-
-			else if (slot == 3) {
-				shop();
-				return;
-			}
-
-
-			else {
-				cout << "Invalid choice." << endl;
-				shop();
-				return;
-			}
+			sellWeapon();
 		}
-
-
-		// -----------------------------------------
-		// SELL ACCESSORY
-		// -----------------------------------------
-
 		else if (whereSell == 2) {
-
-			int slot;
-
-			cout << endl;
-			cout << "Which accessory would you like to sell?" << endl;
-			cout << "1: Right hand - " << accessories[0] << endl;
-			cout << "2: Left hand - " << accessories[1] << endl;
-			cout << "3: Body - " << accessories[2] << endl;
-			cout << "4: Go back" << endl;
-			cin >> slot;
-
-
-			if (slot >= 1 && slot <= 3) {
-
-				if (accessories[slot - 1] == "nothing atm") {
-
-					cout << "There is nothing equipped in that slot." << endl;
-					shop();
-					return;
-				}
-
-				string itemSold = accessories[slot - 1];
-				int sellPrice = 0;
-
-
-				// Ring prices
-				if (itemSold == "Ring of Vitality (+10 MAX Hp)") {
-					sellPrice = 50;
-				}
-				else if (itemSold == "Ring of Strength (+3 to attack)") {
-					sellPrice = 50;
-				}
-				else if (itemSold == "ring of lightning (free 1d6 attack)") {
-					sellPrice = 60;
-				}
-
-				// Armor prices
-				else if (itemSold == "Studded lether +5 to Hp") {
-					sellPrice = 30;
-				}
-				else if (itemSold == "Chainmail +10 to Hp") {
-					sellPrice = 45;
-				}
-				else if (itemSold == "Plate armor +20 to hp") {
-					sellPrice = 70;
-				}
-				else {
-					sellPrice = 10;
-				}
-
-
-				accessories[slot - 1] = "nothing atm";
-				gold += sellPrice;
-
-				cout << endl;
-				cout << "You sold " << itemSold << " for "
-					<< sellPrice << " gold!" << endl;
-
-				cout << "You now have " << gold << " gold." << endl;
-
-				shop();
-				return;
-			}
-
-
-			else if (slot == 4) {
-				shop();
-				return;
-			}
-
-
-			else {
-				cout << "Invalid choice." << endl;
-				shop();
-				return;
-			}
+			sellAccessory();
 		}
-
-
-		// -----------------------------------------
-		// SELL INVENTORY ITEM
-		// -----------------------------------------
-
 		else if (whereSell == 3) {
-
-			int slot;
-
-			cout << endl;
-			cout << "Which inventory item would you like to sell?" << endl;
-			cout << "1: " << inventory[0] << endl;
-			cout << "2: " << inventory[1] << endl;
-			cout << "3: " << inventory[2] << endl;
-			cout << "4: Go back" << endl;
-			cin >> slot;
-
-
-			if (slot >= 1 && slot <= 3) {
-
-				if (inventory[slot - 1] == "nothing atm") {
-
-					cout << "There is nothing in that inventory slot." << endl;
-					shop();
-					return;
-				}
-
-				string itemSold = inventory[slot - 1];
-				int sellPrice = 0;
-
-
-				// Common items
-				if (itemSold == "basic ring") {
-					sellPrice = 5;
-				}
-				else if (itemSold == "scrap") {
-					sellPrice = 3;
-				}
-				else if (itemSold == "chain") {
-					sellPrice = 5;
-				}
-
-				// Weapons
-				else if (itemSold == "Dagger 4d4-3") {
-					sellPrice = 15;
-				}
-				else if (itemSold == "Saber 3d4") {
-					sellPrice = 20;
-				}
-				else if (itemSold == "Axe 2d4") {
-					sellPrice = 20;
-				}
-				else if (itemSold == "Sythe 1d8") {
-					sellPrice = 15;
-				}
-				else if (itemSold == "Long Sword 2d8-3") {
-					sellPrice = 25;
-				}
-				else if (itemSold == "Lance 1d12-3+critchance") {
-					sellPrice = 30;
-				}
-
-				// Armor
-				else if (itemSold == "Studded lether +5 to Hp") {
-					sellPrice = 30;
-				}
-				else if (itemSold == "Chainmail +10 to Hp") {
-					sellPrice = 45;
-				}
-				else if (itemSold == "Plate armor +20 to hp") {
-					sellPrice = 70;
-				}
-
-				// Scrolls
-				else if (itemSold == "Scroll of Fireball (1d20)") {
-					sellPrice = 35;
-				}
-				else if (itemSold == "Scroll of Healing (heal 2d10)") {
-					sellPrice = 30;
-				}
-				else if (itemSold == "Scroll of Attack (+1d6 to damage)") {
-					sellPrice = 35;
-				}
-				else if (itemSold == "Scroll of Speed (+1 attack)") {
-					sellPrice = 40;
-				}
-				else if (itemSold == "Scroll of Divinity (+10 MAX Hp)") {
-					sellPrice = 50;
-				}
-				else if (itemSold == "Scroll of Chance (x2 attack but can miss)") {
-					sellPrice = 50;
-				}
-
-				// Legendary rings
-				else if (itemSold == "Ring of Vitality (+10 MAX Hp)") {
-					sellPrice = 50;
-				}
-				else if (itemSold == "Ring of Strength (+3 to attack)") {
-					sellPrice = 50;
-				}
-				else if (itemSold == "ring of lightning (free 1d6 attack)") {
-					sellPrice = 60;
-				}
-
-				else {
-					sellPrice = 5;
-				}
-
-
-				inventory[slot - 1] = "nothing atm";
-				gold += sellPrice;
-
-				cout << endl;
-				cout << "You sold " << itemSold << " for "
-					<< sellPrice << " gold!" << endl;
-
-				cout << "You now have " << gold << " gold." << endl;
-
-				shop();
-				return;
-			}
-
-
-			else if (slot == 4) {
-				shop();
-				return;
-			}
-
-
-			else {
-				cout << "Invalid choice." << endl;
-				shop();
-				return;
-			}
+			sellInventoryItem();
 		}
-
-
 		else if (whereSell == 4) {
-			shop();
 			return;
 		}
-
-
 		else {
-			cout << "Invalid choice." << endl;
-			shop();
-			return;
+			shopMessage("Invalid choice.");
 		}
+
+		shop();
+		return;
 	}
 
-
-	// =========================================
+	// ========================================================
 	// BUY
-	// =========================================
+	// ========================================================
 
-	else if (whatDo == 2) {
+	if (whatDo == 2) {
 
 		int whatBuy;
 
 		cout << endl;
-		cout << "What would you like to buy?" << endl;
-		cout << "1: Common items" << endl;
-		cout << "2: Weapons" << endl;
-		cout << "3: Armor" << endl;
-		cout << "4: Scrolls" << endl;
-		cout << "5: Legendary rings" << endl;
-		cout << "6: Go back" << endl;
+		shopTitle("What would you like to buy?");
+		shopOption(1, "Common items");
+		shopOption(2, "Weapons");
+		shopOption(3, "Armor");
+		shopOption(4, "Scrolls");
+		shopOption(5, "Legendary rings");
+		shopOption(6, "Go back");
+
 		cin >> whatBuy;
 
-
-		// -----------------------------------------
-		// COMMON ITEMS
-		// -----------------------------------------
-
 		if (whatBuy == 1) {
-
-			int choice;
-			string itemBought;
-			int price;
-
-			cout << endl;
-			cout << "Common items:" << endl;
-			cout << "1: Basic ring - 10 gold" << endl;
-			cout << "2: Scrap - 6 gold" << endl;
-			cout << "3: Chain - 10 gold" << endl;
-			cin >> choice;
-
-
-			if (choice == 1) {
-				itemBought = "basic ring";
-				price = 10;
-			}
-			else if (choice == 2) {
-				itemBought = "scrap";
-				price = 6;
-			}
-			else if (choice == 3) {
-				itemBought = "chain";
-				price = 10;
-			}
-			else {
-				cout << "Invalid choice." << endl;
-				shop();
-				return;
-			}
-
-
-			if (gold < price) {
-				cout << "You do not have enough gold." << endl;
-				shop();
-				return;
-			}
-
-
-			int slot;
-
-			cout << "Which inventory slot would you like to put it in?" << endl;
-			cout << "1: " << inventory[0] << endl;
-			cout << "2: " << inventory[1] << endl;
-			cout << "3: " << inventory[2] << endl;
-			cin >> slot;
-
-
-			if (slot >= 1 && slot <= 3 &&
-				inventory[slot - 1] == "nothing atm") {
-
-				inventory[slot - 1] = itemBought;
-				gold -= price;
-
-				cout << "You bought " << itemBought << " for "
-					<< price << " gold." << endl;
-			}
-			else {
-				cout << "That inventory slot is unavailable." << endl;
-			}
-
-			shop();
-			return;
+			buyCommonItem();
 		}
-
-
-		// -----------------------------------------
-		// WEAPONS
-		// -----------------------------------------
-
 		else if (whatBuy == 2) {
-
-			int choice;
-
-			cout << endl;
-			cout << "Weapons:" << endl;
-			cout << "1: Dagger 4d4-3 - 30 gold" << endl;
-			cout << "2: Saber 3d4 - 35 gold" << endl;
-			cout << "3: Axe 2d4 - 35 gold" << endl;
-			cout << "4: Sythe 1d8 - 30 gold" << endl;
-			cout << "5: Long Sword 2d8-3 - 40 gold" << endl;
-			cout << "6: Lance 1d12-3+critchance - 50 gold" << endl;
-			cin >> choice;
-
-
-			string itemBought;
-			int price;
-
-
-			if (choice == 1) {
-				itemBought = allItems[1][0];
-				price = 30;
-			}
-			else if (choice == 2) {
-				itemBought = allItems[1][1];
-				price = 35;
-			}
-			else if (choice == 3) {
-				itemBought = allItems[1][2];
-				price = 35;
-			}
-			else if (choice == 4) {
-				itemBought = allItems[1][3];
-				price = 30;
-			}
-			else if (choice == 5) {
-				itemBought = allItems[1][4];
-				price = 40;
-			}
-			else if (choice == 6) {
-				itemBought = allItems[1][5];
-				price = 50;
-			}
-			else {
-				cout << "Invalid choice." << endl;
-				shop();
-				return;
-			}
-
-
-			if (gold < price) {
-				cout << "You do not have enough gold." << endl;
-				shop();
-				return;
-			}
-
-
-			int storage;
-			cout << "Where would you like to store the weapon?" << endl;
-			cout << "1: Weapon slot" << endl;
-			cout << "2: Inventory" << endl;
-			cin >> storage;
-
-
-			if (storage == 1) {
-
-				int slot;
-
-				cout << "Which weapon slot?" << endl;
-				cout << "1: " << weaponSlots[0] << endl;
-				cout << "2: " << weaponSlots[1] << endl;
-				cin >> slot;
-
-
-				if (slot >= 1 && slot <= 2 &&
-					weaponSlots[slot - 1] == "nothing atm") {
-
-					weaponSlots[slot - 1] = itemBought;
-					gold -= price;
-
-					cout << "You bought " << itemBought << " for "
-						<< price << " gold." << endl;
-				}
-				else {
-					cout << "That weapon slot is unavailable." << endl;
-				}
-			}
-
-
-			else if (storage == 2) {
-
-				int slot;
-
-				cout << "Which inventory slot?" << endl;
-				cout << "1: " << inventory[0] << endl;
-				cout << "2: " << inventory[1] << endl;
-				cout << "3: " << inventory[2] << endl;
-				cin >> slot;
-
-				if (slot >= 1 && slot <= 3 &&
-					inventory[slot - 1] == "nothing atm") {
-
-					inventory[slot - 1] = itemBought;
-					gold -= price;
-
-					cout << "You bought " << itemBought << " for "
-						<< price << " gold." << endl;
-				}
-				else {
-					cout << "That inventory slot is unavailable." << endl;
-				}
-			}
-
-
-			else {
-				cout << "Invalid storage choice." << endl;
-			}
-
-
-			shop();
-			return;
+			buyWeapon();
 		}
-
-
-		// -----------------------------------------
-		// ARMOR
-		// -----------------------------------------
-
 		else if (whatBuy == 3) {
-
-			int choice;
-
-			cout << endl;
-			cout << "Armor:" << endl;
-			cout << "1: Studded lether +5 to Hp - 40 gold" << endl;
-			cout << "2: Chainmail +10 to Hp - 60 gold" << endl;
-			cout << "3: Plate armor +20 to hp - 90 gold" << endl;
-			cin >> choice;
-
-
-			string itemBought;
-			int price;
-
-
-			if (choice == 1) {
-				itemBought = allItems[2][0];
-				price = 40;
-			}
-			else if (choice == 2) {
-				itemBought = allItems[2][1];
-				price = 60;
-			}
-			else if (choice == 3) {
-				itemBought = allItems[2][2];
-				price = 90;
-			}
-			else {
-				cout << "Invalid choice." << endl;
-				shop();
-				return;
-			}
-
-
-			if (gold < price) {
-				cout << "You do not have enough gold." << endl;
-				shop();
-				return;
-			}
-
-
-			int storage;
-
-			cout << "Where would you like to store the armor?" << endl;
-			cout << "1: Equip armor" << endl;
-			cout << "2: Inventory" << endl;
-			cin >> storage;
-
-
-			if (storage == 1) {
-
-				if (accessories[2] == "nothing atm") {
-
-					accessories[2] = itemBought;
-					gold -= price;
-
-					cout << "You bought and equipped "
-						<< itemBought << " for "
-						<< price << " gold." << endl;
-				}
-				else {
-					cout << "You are already wearing armor." << endl;
-				}
-			}
-
-
-			else if (storage == 2) {
-
-				int slot;
-
-				cout << "Which inventory slot?" << endl;
-				cout << "1: " << inventory[0] << endl;
-				cout << "2: " << inventory[1] << endl;
-				cout << "3: " << inventory[2] << endl;
-				cin >> slot;
-
-				bool alreadyCarryingArmor = false;
-				for (int i = 0; i < 3; i++) {
-					if (isArmor(inventory[i])) alreadyCarryingArmor = true;
-				}
-
-				if (alreadyCarryingArmor) {
-					cout << "You can only carry one armor piece in your inventory." << endl;
-				}
-				else if (slot >= 1 && slot <= 3 &&
-					inventory[slot - 1] == "nothing atm") {
-
-					inventory[slot - 1] = itemBought;
-					gold -= price;
-
-					cout << "You bought " << itemBought << " for "
-						<< price << " gold." << endl;
-				}
-				else {
-					cout << "That inventory slot is unavailable." << endl;
-				}
-			}
-
-
-			else {
-				cout << "Invalid storage choice." << endl;
-			}
-
-
-			shop();
-			return;
+			buyArmor();
 		}
-
-
-		// -----------------------------------------
-		// SCROLLS
-		// -----------------------------------------
-
 		else if (whatBuy == 4) {
-
-			int choice;
-
-			cout << endl;
-			cout << "Scrolls:" << endl;
-			cout << "1: Fireball - 50 gold" << endl;
-			cout << "2: Healing - 45 gold" << endl;
-			cout << "3: Attack - 50 gold" << endl;
-			cout << "4: Speed - 60 gold" << endl;
-			cout << "5: Divinity - 70 gold" << endl;
-			cout << "6: Chance - 75 gold" << endl;
-			cin >> choice;
-
-
-			string itemBought;
-			int price;
-
-
-			if (choice >= 1 && choice <= 6) {
-
-				itemBought = allItems[3][choice - 1];
-
-				if (choice == 1) price = 50;
-				else if (choice == 2) price = 45;
-				else if (choice == 3) price = 50;
-				else if (choice == 4) price = 60;
-				else if (choice == 5) price = 70;
-				else price = 75;
-			}
-			else {
-				cout << "Invalid choice." << endl;
-				shop();
-				return;
-			}
-
-
-			if (gold < price) {
-				cout << "You do not have enough gold." << endl;
-				shop();
-				return;
-			}
-
-
-			int slot;
-
-			cout << "Which inventory slot would you like to use?" << endl;
-			cout << "1: " << inventory[0] << endl;
-			cout << "2: " << inventory[1] << endl;
-			cout << "3: " << inventory[2] << endl;
-			cin >> slot;
-
-
-			if (slot >= 1 && slot <= 3 &&
-				inventory[slot - 1] == "nothing atm") {
-
-				inventory[slot - 1] = itemBought;
-				gold -= price;
-
-				cout << "You bought " << itemBought << " for "
-					<< price << " gold." << endl;
-			}
-			else {
-				cout << "That inventory slot is unavailable." << endl;
-			}
-
-
-			shop();
-			return;
+			buyScroll();
 		}
-
-
-		// -----------------------------------------
-		// LEGENDARY RINGS
-		// -----------------------------------------
-
 		else if (whatBuy == 5) {
-
-			int choice;
-
-			cout << endl;
-			cout << "Legendary Rings:" << endl;
-			cout << "1: Ring of Vitality - 100 gold" << endl;
-			cout << "2: Ring of Strength - 100 gold" << endl;
-			cout << "3: Ring of Lightning - 125 gold" << endl;
-			cin >> choice;
-
-
-			string itemBought;
-			int price;
-
-
-			if (choice == 1) {
-				itemBought = allItems[4][0];
-				price = 100;
-			}
-			else if (choice == 2) {
-				itemBought = allItems[4][1];
-				price = 100;
-			}
-			else if (choice == 3) {
-				itemBought = allItems[4][2];
-				price = 125;
-			}
-			else {
-				cout << "Invalid choice." << endl;
-				shop();
-				return;
-			}
-
-
-			if (gold < price) {
-				cout << "You do not have enough gold." << endl;
-				shop();
-				return;
-			}
-
-
-			int storage;
-
-			cout << "Where would you like to store the ring?" << endl;
-			cout << "1: Equip ring" << endl;
-			cout << "2: Inventory" << endl;
-			cin >> storage;
-
-
-			if (storage == 1) {
-
-				int slot;
-
-				cout << "Which ring slot?" << endl;
-				cout << "1: Right hand" << endl;
-				cout << "2: Left hand" << endl;
-				cin >> slot;
-
-
-				if (slot >= 1 && slot <= 2 &&
-					accessories[slot - 1] == "nothing atm") {
-
-					accessories[slot - 1] = itemBought;
-					gold -= price;
-
-					cout << "You bought and equipped "
-						<< itemBought << " for "
-						<< price << " gold." << endl;
-				}
-				else {
-					cout << "That ring slot is unavailable." << endl;
-				}
-			}
-
-
-			else if (storage == 2) {
-
-				int slot;
-
-				cout << "Which inventory slot?" << endl;
-				cout << "1: " << inventory[0] << endl;
-				cout << "2: " << inventory[1] << endl;
-				cout << "3: " << inventory[2] << endl;
-				cin >> slot;
-
-
-				if (slot >= 1 && slot <= 3 &&
-					inventory[slot - 1] == "nothing atm") {
-
-					inventory[slot - 1] = itemBought;
-					gold -= price;
-
-					cout << "You bought " << itemBought << " for "
-						<< price << " gold." << endl;
-				}
-				else {
-					cout << "That inventory slot is unavailable." << endl;
-				}
-			}
-
-
-			else {
-				cout << "Invalid storage choice." << endl;
-			}
-
-
-			shop();
-			return;
+			buyRing();
 		}
-
-
 		else if (whatBuy == 6) {
-			shop();
 			return;
 		}
-
-
 		else {
-			cout << "Invalid choice." << endl;
-			shop();
-			return;
+			shopMessage("Invalid choice.");
 		}
-	}
 
-
-	// =========================================
-	// LEAVE SHOP
-	// =========================================
-
-	else if (whatDo == 3) {
-
-		cout << endl;
-		cout << "You leave the wandering merchant." << endl;
-		cout << endl;
-		restLevel(NULL, true);
-
-		return;
-	}
-
-
-	// =========================================
-	// INVALID CHOICE
-	// =========================================
-
-	else {
-
-		cout << "Invalid choice." << endl;
 		shop();
 		return;
 	}
+
+	// ========================================================
+	// LEAVE SHOP
+	// ========================================================
+
+	if (whatDo == 3) {
+
+		cout << endl;
+		shopMessage("You leave the wandering merchant.");
+		cout << endl;
+
+		restLevel(false, true);
+		return;
+	}
+
+	shopMessage("Invalid choice.");
+	shop();
 }
