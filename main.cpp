@@ -6,8 +6,11 @@
 
 int main() {
     srand(time(NULL));
-    calculateMaxXP();
+
+    calculateFirstLvl();
     chooseWeapon();
     playerStats();
     startGame();
+
+    return 0;
 }

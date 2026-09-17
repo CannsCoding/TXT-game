@@ -208,6 +208,8 @@ void storeItem(string itemGiven, int itemType) {
 	// ARMOR - BODY SLOT OR INVENTORY
 	// =========================================
 
+	
+
 	else if (itemType == 2) {
 
 		cout << "Where would you like to store your armor?" << endl;

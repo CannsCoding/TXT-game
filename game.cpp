@@ -96,7 +96,7 @@ void lvlGenerator(bool previousWasRest) {
 
 void normalLevel() {
 	cout << "you encounterd a basic enemy!" << endl;
-	health += maxHealth * .30;
+	health = health + maxHealth * .30;
 	if (health > maxHealth) {
 		health = maxHealth;
 	}
@@ -122,8 +122,8 @@ void bossLevel() {
 
 void restLevel(bool dontAllowDigging, bool dontAllowShop) {
 	int healthPercent = maxHealth * 0.30;
-	round(healthPercent);
 	int wouldDo;
+	playerStats();
 	cout << "you have found a safe place in the woods where a wandering merchant seems to be, while you are here what would you like to do?" << endl;
 	cout << "1: rest (heal 30% of max hp " << healthPercent << ") and continue on my current journey" << endl;
 	cout << "2: Talk to the wandering merchant. (can only do once per rest site)" << endl;

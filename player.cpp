@@ -15,12 +15,48 @@ int calculateHealth(int playerLVL, int usedScroll, int wearigRing) {
 }
 
 // =========================================
-// CALCULATE XP given
+// CALCULATE XP GIVEN
 // =========================================
 
-int xpGiven(int isBoss) {
-	givenXP = isBoss * 1.7;
-	XP = XP + givenXP;
+int xpGiven(int xpAmount) {
+	givenXP = xpAmount;
+	XP += givenXP;
+	cout << "You gained " << XP << " " << " XP!" << endl;
+	didLVLUp();
+
+	return givenXP;
+}
+
+// =========================================
+// CALCULATE LVL UP
+// =========================================
+
+int didLVLUp() {
+	bool leveledUp = false;
+
+	while (XP >= maxXP && maxXP > 0) {
+		XP -= maxXP;
+		levelOfPlayer++;
+
+		// Increase the player's maximum health each level.
+		maxHealth += levelOfPlayer * 1.5 + rand() % 3 + 1;
+		health = maxHealth;
+
+		calculateMaxXP();
+
+		leveledUp = true;
+	}
+
+	if (leveledUp) {
+		cout << "========================================" << endl;
+		cout << "             YOU LEVELED UP!" << endl;
+		cout << "========================================" << endl;
+		cout << "You are now level " << levelOfPlayer << "!" << endl;
+		cout << "Your maximum health is now " << maxHealth << "." << endl;
+		cout << "Your next level requires " << maxXP << " XP." << endl;
+	}
+
+	return leveledUp ? 1 : 0;
 }
 
 // =========================================
@@ -28,7 +64,8 @@ int xpGiven(int isBoss) {
 // =========================================
 
 void calculateMaxXP() {
-	maxXP = (maxXP * .5) + (levelOfPlayer * 1.5);
+    // XP requirements increase as the player's level increases.
+    maxXP = 10 + levelOfPlayer * 5;
 }
 
 // =========================================
@@ -36,11 +73,15 @@ void calculateMaxXP() {
 // =========================================
 
 void calculateFirstLvl() {
-	int playerLVL = rand() % 10 + 5;
-	maxXP = playerLVL;
-	levelOfPlayer = playerLVL;
+	levelOfPlayer = rand() % 10 + 5;
+
+	XP = 0;
+	maxXP = 0;
+	health = 0;
+	maxHealth = 0;
+
 	calculateMaxXP();
-	calculateHealth(levelOfPlayer, NULL, NULL);
+	calculateHealth(levelOfPlayer, 0, 0);
 }
 
 // =========================================
@@ -48,25 +89,82 @@ void calculateFirstLvl() {
 // =========================================
 
 void playerStats() {
-	cout << "--- PLayer Stats ---" << endl;
-	cout << "Player LVL: " << levelOfPlayer << endl;
-	cout << "HP: " << health << "/" << maxHealth << endl;
-	cout << " " << endl;
-	cout << "--- PLayer's Weapons ---" << endl;
-	cout << "Right hand, Weapon slot 1: " << weaponSlots[0] << endl;
-	cout << "Left hand, Weapon slot 2: " << weaponSlots[1] << " (-2)" << endl;
-	cout << " " << endl;
-	cout << "--- PLayer's Accessories ---" << endl;
-	cout << "Right hand, Accessory: " << accessories[0] << endl;
-	cout << "Left hand, Accessory: " << accessories[1] << endl;
-	cout << "Body, Accessory: " << accessories[2] << endl;
-	cout << " " << endl;
-	cout << "--- PLayer's inventory ---" << endl;
-	cout << "Gold: " << gold << endl;
-	cout << "Inventory slot 1: " << inventory[0] << endl;
-	cout << "Inventory slot 2: " << inventory[1] << endl;
-	cout << "Inventory slot 3: " << inventory[2] << endl;
-	cout << " " << endl;
+	cout << '\n';
+	cout << "========================================" << endl;
+	cout << "\t\tPLAYER" << endl;
+	cout << "========================================" << endl;
+	cout << '\n';
+
+	// Player stats
+	cout << orangeText << "--- Player Stats ---" << resetColor << endl;
+	cout << '\n';
+
+	cout << limeGreenText << "Player LVL: " << resetColor
+		<< yellowText << levelOfPlayer << resetColor << endl;
+
+	cout << limeGreenText << "HP: " << resetColor
+		<< yellowText << health << "/" << maxHealth
+		<< resetColor << endl;
+
+	cout << limeGreenText << "XP: " << resetColor
+		<< yellowText << XP << "/" << maxXP
+		<< resetColor << endl;
+
+	cout << '\n';
+
+	// Weapons
+	cout << orangeText << "--- Player's Weapons ---" << resetColor << endl;
+	cout << '\n';
+
+	cout << limeGreenText << "Right hand, Weapon slot 1: "
+		<< resetColor << yellowText << weaponSlots[0]
+		<< resetColor << endl;
+
+	cout << limeGreenText << "Left hand, Weapon slot 2: "
+		<< resetColor << yellowText << weaponSlots[1]
+		<< " (-2)" << resetColor << endl;
+
+	cout << '\n';
+
+	// Accessories
+	cout << orangeText << "--- Player's Accessories ---" << resetColor << endl;
+	cout << '\n';
+
+	cout << limeGreenText << "Right hand, Accessory: "
+		<< resetColor << yellowText << accessories[0]
+		<< resetColor << endl;
+
+	cout << limeGreenText << "Left hand, Accessory: "
+		<< resetColor << yellowText << accessories[1]
+		<< resetColor << endl;
+
+	cout << limeGreenText << "Body, Accessory: "
+		<< resetColor << yellowText << accessories[2]
+		<< resetColor << endl;
+
+	cout << '\n';
+
+	// Inventory
+	cout << orangeText << "--- Player's Inventory ---" << resetColor << endl;
+	cout << '\n';
+
+	cout << limeGreenText << "Gold: "
+		<< resetColor << yellowText << gold
+		<< resetColor << endl;
+
+	cout << limeGreenText << "Inventory slot 1: "
+		<< resetColor << yellowText << inventory[0]
+		<< resetColor << endl;
+
+	cout << limeGreenText << "Inventory slot 2: "
+		<< resetColor << yellowText << inventory[1]
+		<< resetColor << endl;
+
+	cout << limeGreenText << "Inventory slot 3: "
+		<< resetColor << yellowText << inventory[2]
+		<< resetColor << endl;
+
+	cout << '\n';
 }
 
 // =========================================

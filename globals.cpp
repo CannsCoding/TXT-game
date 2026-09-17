@@ -16,6 +16,11 @@ int givenXP;
 int mapLevel;
 int gold;
 bool canDig = true;
+const string orangeText = "\033[38;2;255;165;0m";
+const string yellowText = "\033[38;2;255;255;0m";
+const string limeGreenText = "\033[38;2;99;255;0m";
+const string resetColor = "\033[0m";
+
 
 // =========================
 // COMBAT VARIABLES

@@ -13,6 +13,10 @@ extern int givenXP;
 extern int mapLevel;
 extern int gold;
 extern bool canDig;
+extern const string orangeText;
+extern const string yellowText;
+extern const string limeGreenText;
+extern const string resetColor;
 
 extern int enemyHealth;
 extern int enemyMaxHealth;

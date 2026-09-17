@@ -46,15 +46,12 @@ void combat(string enemyName, bool isBoss) {
 
 			cout << endl;
 			cout << "========================================" << endl;
-			cout << "             ENEMY DEFEATED!" << endl;
+			cout << "            ENEMY DEFEATED!" << endl;
 			cout << "========================================" << endl;
 
 			cout << "You defeated " << enemyName << "!" << endl;
 
-			XP += isBoss ? xpGiven(30) : xpGiven(10);
-
-			cout << "You gained " << XP << " " << " XP!" << endl;
-
+			xpGiven(isBoss ? 30 : 10);
 
 			itemRandomizer();
 			return;
