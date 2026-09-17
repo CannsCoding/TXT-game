@@ -121,7 +121,7 @@ void bossLevel() {
 // =========================
 
 void restLevel(bool dontAllowDigging, bool dontAllowShop) {
-	int healthPercent = maxHealth * 0.15;
+	int healthPercent = maxHealth * 0.30;
 	round(healthPercent);
 	int wouldDo;
 	cout << "you have found a safe place in the woods where a wandering merchant seems to be, while you are here what would you like to do?" << endl;

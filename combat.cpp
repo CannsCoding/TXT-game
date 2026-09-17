@@ -2,6 +2,7 @@
 #include "game.h"
 #include "globals.h"
 #include "items.h"
+#include "player.h"
 #include <iostream>
 
 using namespace std;
@@ -50,9 +51,10 @@ void combat(string enemyName, bool isBoss) {
 
 			cout << "You defeated " << enemyName << "!" << endl;
 
-			XP += isBoss ? 100 : 25;
+			XP += isBoss ? xpGiven(30) : xpGiven(10);
 
-			cout << "You gained " << (isBoss ? 100 : 25) << " XP!" << endl;
+			cout << "You gained " << XP << " " << " XP!" << endl;
+
 
 			itemRandomizer();
 			return;
@@ -82,11 +84,39 @@ void combat(string enemyName, bool isBoss) {
 				return;
 			}
 		}
-		return;
 	}
 }
 
-//made a change
+// ============================================================
+// ENEMY TURN
+// ============================================================
+
+void enemyTurn(string enemyName) {
+
+	if (enemyHealth <= 0) {
+		return;
+	}
+
+	cout << endl;
+	cout << "========================================" << endl;
+	cout << "             ENEMY TURN" << endl;
+	cout << "========================================" << endl;
+
+	int damage = enemyDamage + rand() % 3;
+
+	cout << enemyName << " attacks you!" << endl;
+	cout << "You take " << damage << " damage!" << endl;
+
+	health -= damage;
+
+	if (health < 0) {
+		health = 0;
+	}
+
+	cout << "Your HP: "
+		<< health << "/"
+		<< maxHealth << endl;
+}
 
 // ============================================================
 // PLAYER TURN
@@ -104,6 +134,12 @@ void playerTurn() {
 	attackScrollBonus = 0;
 
 	bool turnFinished = false;
+
+	// If the player has a second weapon, they get
+	// an additional attack this turn.
+	if (weaponSlots[1] != "nothing atm") {
+		attacksRemaining = 2;
+	}
 
 	while (!turnFinished && enemyHealth > 0) {
 
@@ -126,7 +162,7 @@ void playerTurn() {
 		cout << "1: Use item" << endl;
 		cout << "2: Use ability" << endl;
 
-		// First weapon is always available
+		// Weapon 1
 		if (attacksRemaining > 0 &&
 			weaponSlots[0] != "nothing atm") {
 
@@ -134,8 +170,7 @@ void playerTurn() {
 				<< weaponSlots[0] << endl;
 		}
 
-		// Second weapon only available if equipped
-		// and there is another attack available
+		// Weapon 2
 		if (attacksRemaining > 0 &&
 			weaponSlots[1] != "nothing atm" &&
 			!secondWeaponUsed) {
@@ -188,10 +223,13 @@ void playerTurn() {
 
 				attackWithWeapon(0);
 
-				// Normal weapon attack ends turn
-				if (!speedScrollActive ||
-					attacksRemaining <= 0) {
+				// If enemy died, end the player's turn
+				if (enemyHealth <= 0) {
+					turnFinished = true;
+				}
 
+				// If there are no attacks left, end turn
+				else if (attacksRemaining <= 0) {
 					turnFinished = true;
 				}
 			}
@@ -224,10 +262,13 @@ void playerTurn() {
 
 				secondWeaponUsed = true;
 
-				// If Speed allows another attack, continue.
-				if (!speedScrollActive ||
-					attacksRemaining <= 0) {
+				// If enemy died, end the player's turn
+				if (enemyHealth <= 0) {
+					turnFinished = true;
+				}
 
+				// If there are no attacks left, end turn
+				else if (attacksRemaining <= 0) {
 					turnFinished = true;
 				}
 			}
@@ -255,37 +296,6 @@ void playerTurn() {
 	speedScrollActive = false;
 	chanceScrollActive = false;
 	attackScrollBonus = 0;
-}
-
-// ============================================================
-// ENEMY TURN
-// ============================================================
-
-void enemyTurn(string enemyName) {
-
-	if (enemyHealth <= 0) {
-		return;
-	}
-
-	cout << endl;
-	cout << "========================================" << endl;
-	cout << "             ENEMY TURN" << endl;
-	cout << "========================================" << endl;
-
-	int damage = enemyDamage + rand() % 3;
-
-	cout << enemyName << " attacks you!" << endl;
-	cout << "You take " << damage << " damage!" << endl;
-
-	health -= damage;
-
-	if (health < 0) {
-		health = 0;
-	}
-
-	cout << "Your HP: "
-		<< health << "/"
-		<< maxHealth << endl;
 }
 
 // ============================================================
@@ -334,18 +344,10 @@ void attackWithWeapon(int weaponSlot) {
 		<< enemyHealth << "/"
 		<< enemyMaxHealth << endl;
 
-	// A weapon attack normally ends the turn.
 	attacksRemaining--;
 
-	// If Speed gives another attack, player gets another attack.
 	if (speedScrollActive && attacksRemaining > 0) {
-
 		cout << "Scroll of Speed gives you another attack!" << endl;
-	}
-
-	else {
-
-		attacksRemaining = 0;
 	}
 }
 

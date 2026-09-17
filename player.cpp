@@ -9,9 +9,38 @@ using namespace std;
 // =========================================
 
 int calculateHealth(int playerLVL, int usedScroll, int wearigRing) {
-	health = health + playerLVL * 1.5 + rand() % 3 + 1;
+	health = health + playerLVL * 1.5 + rand() % 3 + 1 + wearigRing + usedScroll;
 	maxHealth = health;
 	return 0;
+}
+
+// =========================================
+// CALCULATE XP given
+// =========================================
+
+int xpGiven(int isBoss) {
+	givenXP = isBoss * 1.7;
+	XP = XP + givenXP;
+}
+
+// =========================================
+// CALCULATE PLAYER MAX XP
+// =========================================
+
+void calculateMaxXP() {
+	maxXP = (maxXP * .5) + (levelOfPlayer * 1.5);
+}
+
+// =========================================
+// CALCULATE PLAYER STARTING LVL
+// =========================================
+
+void calculateFirstLvl() {
+	int playerLVL = rand() % 10 + 5;
+	maxXP = playerLVL;
+	levelOfPlayer = playerLVL;
+	calculateMaxXP();
+	calculateHealth(levelOfPlayer, NULL, NULL);
 }
 
 // =========================================

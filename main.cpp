@@ -6,11 +6,7 @@
 
 int main() {
     srand(time(NULL));
-
-    int playerLVL = rand() % 10 + 1;
-    levelOfPlayer = playerLVL;
-
-    calculateHealth(playerLVL, NULL, NULL);
+    calculateMaxXP();
     chooseWeapon();
     playerStats();
     startGame();
