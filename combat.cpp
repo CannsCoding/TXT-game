@@ -47,9 +47,9 @@ void combat(string enemyName, bool isBoss) {
 	resetCombat();
 
 	if (isBoss) {
-		enemyMaxHealth = 5 + (levelOfPlayer * .5) * 3
+		enemyMaxHealth = 5 + (levelOfPlayer * 1.5) * 3
 			+ rand() % 10 + 1;
-		enemyDamage = 2 + levelOfPlayer * .5;
+		enemyDamage = 2 + levelOfPlayer * 1.5;
 	}
 	else {
 		enemyMaxHealth = 5 + levelOfPlayer + rand() % 5 + 1;
@@ -90,25 +90,6 @@ void combat(string enemyName, bool isBoss) {
 			cout << redText
 				<< "You have been defeated."
 				<< resetColor << endl;
-
-			cout << greenText
-				<< "Would you like to play again? (y/n)"
-				<< resetColor << endl;
-
-			cin >> wouldPlay;
-
-			if (wouldPlay == 'y' || wouldPlay == 'Y') {
-				startGame();
-				return;
-			}
-			else if (wouldPlay == 'n' || wouldPlay == 'N') {
-				return;
-			}
-			else {
-				printMessage("Invalid input, try again.");
-				combat("NULL", false);
-				return;
-			}
 		}
 	}
 }

@@ -4,7 +4,8 @@
 
 using namespace std;
 
-void calculateFirstLvl();
+void calculateFirstLvl(bool egg);
+void givePlayerName();
 int calculateHealth(int playerLVL, int usedScroll, int wearingRing);
 void playerStats();
 void calculateDamage(int pLVL, int weapon);

@@ -7,7 +7,8 @@
 int main() {
     srand(time(NULL));
 
-    calculateFirstLvl();
+    givePlayerName();
+    calculateFirstLvl(easterEggStats);
     chooseWeapon();
     playerStats();
     startGame();

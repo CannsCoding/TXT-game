@@ -4,6 +4,9 @@
 
 using namespace std;
 
+extern const string easterEggName;
+extern bool easterEggStats;
+extern string playerName;
 extern int health;
 extern int maxHealth;
 extern int levelOfPlayer;

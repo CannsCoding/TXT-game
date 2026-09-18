@@ -7,6 +7,7 @@ using namespace std;
 
 #include "globals.h"
 
+string playerName;
 int health;
 int maxHealth;
 int levelOfPlayer;
@@ -16,6 +17,8 @@ int givenXP;
 int mapLevel;
 int gold;
 bool canDig = true;
+const string easterEggName = "BigStrongGuy";
+bool easterEggStats = false;
 const string redText = "\033[38;2;255;30;30m";
 const string orangeText = "\033[38;2;255;165;0m";
 const string yellowText = "\033[38;2;255;255;0m";

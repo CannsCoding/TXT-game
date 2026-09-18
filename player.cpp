@@ -1,8 +1,44 @@
 #include "player.h"
 #include "globals.h"
 #include <iostream>
+#include <string>
 
 using namespace std;
+
+// =========================================
+// GIVE PLAYER A NAME
+// =========================================
+
+void givePlayerName() {
+
+	cout << greenText << "What would you like to Name your Charecter: " << resetColor;
+	getline(cin, playerName);
+	cout << endl;
+
+	char correctName;
+	cout << greenText << "you have inputed the name: " << yellowText << playerName << greenText << " with " << orangeText << playerName.length() << greenText << " characters, is that what you would like? (y/n)" << resetColor << endl;
+	cin >> correctName;
+
+	if (tolower(correctName) == 'y') {
+		if (playerName == easterEggName) {
+			cout << greenText << "Oh I didn't know we were dealing with THE " << brownText << playerName << greenText << " let me make some adjustments..." << resetColor << endl;
+			easterEggStats = true;
+		}
+		cout << greenText << "well hello " << yellowText << playerName << greenText << " but your name is about to change (or possibly not), it is tradition to have you're name in all lower case." << resetColor << endl;
+		for (int i = 0; i < playerName.length(); i++) {
+			playerName[i] = tolower(playerName[i]);
+		}
+		cout << greenText << "so your name is now: " << yellowText << playerName << greenText << " lets get you started on your journey" << resetColor << endl;
+	}
+	else if (tolower(correctName) == 'n') {
+		cout << greenText << "then please correct your name" << resetColor << endl;
+		givePlayerName();
+	}
+	else {
+		cout << redText << "INVALID!! " << greenText << "please try again" << resetColor << endl;
+		givePlayerName();
+	}
+}
 
 // =========================================
 // CALCULATE PLAYER HEALTH
@@ -87,16 +123,31 @@ void calculateMaxXP() {
 // CALCULATE PLAYER STARTING LVL
 // =========================================
 
-void calculateFirstLvl() {
-	levelOfPlayer = rand() % 10 + 5;
+void calculateFirstLvl(bool egg) {
 
-	XP = 0;
-	maxXP = 0;
-	health = 0;
-	maxHealth = 0;
+	if (egg) {
+		levelOfPlayer = 100;
 
-	calculateMaxXP();
-	calculateHealth(levelOfPlayer, 0, 0);
+		XP = 0;
+		maxXP = 0;
+		health = 0;
+		maxHealth = 0;
+
+		calculateMaxXP();
+		calculateHealth(levelOfPlayer, 0, 0);
+	}
+	else {
+		levelOfPlayer = rand() % 10 + 5;
+
+		XP = 0;
+		maxXP = 0;
+		health = 0;
+		maxHealth = 0;
+
+		calculateMaxXP();
+		calculateHealth(levelOfPlayer, 0, 0);
+	}
+
 }
 
 // =========================================
@@ -110,7 +161,7 @@ void playerStats() {
 	cout << resetColor;
 
 	cout << purpleText;
-	cout << "\t\tPLAYER" << endl;
+	cout << "\t\t" << playerName << endl;
 	cout << resetColor;
 
 	cout << blueText;
@@ -124,6 +175,9 @@ void playerStats() {
 
 	cout << limeGreenText << "Player LVL: " << resetColor
 		<< yellowText << levelOfPlayer << resetColor << endl;
+
+	cout << limeGreenText << "Player attack value: " << resetColor
+		<< yellowText << levelOfPlayer * .5 << resetColor << endl;
 
 	cout << limeGreenText << "HP: " << resetColor
 		<< yellowText << health << "/" << maxHealth
@@ -207,7 +261,7 @@ void chooseWeapon() {
 	int weaponOfChoice;
 
 	cout << greenText;
-	cout << "What is your weapon of choice:";
+	cout << "What is your weapon of choice (weapon does damage off of a attack roll + your attack stat which scales with lvl):";
 	cout << resetColor << endl;
 
 	cout << limeGreenText;
