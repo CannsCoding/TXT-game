@@ -15,6 +15,19 @@ void givePlayerName() {
 	getline(cin, playerName);
 	cout << endl;
 
+	char hasLastName;
+	cout << greenText << "Does your Charecter have a last name? (y/n): " << resetColor << endl;
+	cin >> hasLastName;
+	cin.ignore();
+
+	if (hasLastName == tolower('Y')) {
+		cout << greenText << "What Last Name would you like to Name your Charecter: " << resetColor;
+		cout << endl;
+		getline(cin, playerLastName);
+
+		playerName = playerName + " " + playerLastName;
+	}
+
 	char correctName;
 	cout << greenText << "you have inputed the name: " << yellowText << playerName << greenText << " with " << orangeText << playerName.length() << greenText << " characters, is that what you would like? (y/n)" << resetColor << endl;
 	cin >> correctName;

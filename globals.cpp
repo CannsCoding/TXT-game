@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include <string>
 #include <cstdlib>
 #include <ctime>
@@ -8,6 +8,7 @@ using namespace std;
 #include "globals.h"
 
 string playerName;
+string playerLastName;
 int health;
 int maxHealth;
 int levelOfPlayer;
